@@ -183,3 +183,27 @@ A real example handoff (this project dogfooding itself) lives at
 ## License
 
 MIT — see [LICENSE](LICENSE).
+
+## Architecture
+
+```mermaid
+flowchart LR
+    CLI[cb CLI] --> INIT[init: scaffold .contextbridge/]
+    CLI --> SAVE[save: write handoff markdown]
+    CLI --> LOAD[load: read handoff back into context]
+    CLI --> LIST[list / status / done]
+    SAVE --> MD[(Markdown files\nwith front matter)]
+    LOAD --> MD
+    LIST --> MD
+```
+
+## More design trade-offs
+
+- **Front matter + Markdown body** — machines parse the header, humans read the body at 2 AM. A pure-JSON store would be machine-friendlier but unreadable in a hurry.
+- **No lockfiles, no migrations** — the format is append-only by convention, with a schema version in front matter leaving room to evolve without migration machinery nobody asked for.
+- **Why not a vector DB or semantic search?** — handoffs are small and few; `grep` over Markdown beats operating infrastructure. `cb search` is on the roadmap for when that stops being true.
+
+## Known limitations
+
+- Concurrent writers to the same handoff file can interleave; fine for single-agent use, not built for multi-agent write races.
+- 22 tests green (including a regression test found by dogfooding the tool on itself).
