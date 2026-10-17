@@ -22,13 +22,12 @@ human-readable handoff file that captures exactly what the next session needs.
 ## Install
 
 ```bash
-git clone <your-fork> contextbridge
+git clone https://github.com/BhagyashriT/contextbridge.git
 cd contextbridge
 pip install -e .
 ```
 
-This installs the `cb` command. Verify with `cb --help`… (well, `cb` with no
-subcommand prints help).
+This installs the `cb` command. Verify it with `cb --help`.
 
 Run the test suite:
 
@@ -180,10 +179,6 @@ A real example handoff (this project dogfooding itself) lives at
 - [ ] `cb search`: full-text search across handoffs
 - [ ] PyPI release (`pip install contextbridge`)
 
-## License
-
-MIT — see [LICENSE](LICENSE).
-
 ## Architecture
 
 ```mermaid
@@ -207,3 +202,7 @@ flowchart LR
 
 - Concurrent writers to the same handoff file can interleave; fine for single-agent use, not built for multi-agent write races.
 - 22 tests green (including a regression test found by dogfooding the tool on itself).
+
+## License
+
+MIT — see [LICENSE](LICENSE).
