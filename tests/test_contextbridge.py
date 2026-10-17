@@ -238,5 +238,33 @@ class TestCLIEndToEnd(TempProject):
         self.assertEqual(h.open_tasks[0].status, "done")
 
 
+class TestColonInValues(TempProject):
+    """Regression: quoted scalar values containing ': ' must round-trip
+    as scalars, not get misparsed as mapping items."""
+
+    def test_scalar_with_colon_round_trips(self):
+        h = self.save(
+            "migrate auth: JWT rollout",
+            decisions=["use RS256: keys in Secrets Manager"],
+            constraints=["her repo, her words: propose, she disposes"],
+            tasks=["rotate keys: staging first"],
+            session_notes="stopped: waiting on review",
+            timestamp="2026-10-16T10:00:00-07:00",
+        )
+        reread = core.get_handoff(self.tmp)
+        self.assertEqual(reread.summary, "migrate auth: JWT rollout")
+        self.assertEqual(reread.decisions,
+                         ["use RS256: keys in Secrets Manager"])
+        self.assertEqual(reread.constraints,
+                         ["her repo, her words: propose, she disposes"])
+        self.assertEqual(reread.open_tasks[0].text,
+                         "rotate keys: staging first")
+        self.assertEqual(reread.session_notes, "stopped: waiting on review")
+        # and the rendered prompt shows the plain text, not a dict repr
+        out = core.render_prompt(reread)
+        self.assertIn("her repo, her words: propose, she disposes", out)
+        self.assertNotIn("{'", out)
+
+
 if __name__ == "__main__":
     unittest.main()

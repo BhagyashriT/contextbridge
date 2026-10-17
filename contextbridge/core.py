@@ -197,7 +197,10 @@ def parse_front_matter(text: str) -> Dict[str, object]:
         elif indent == 2 and stripped.startswith("- ") and current_key:
             _flush_item()
             rest = stripped[2:].strip()
-            if ": " in rest or rest.endswith(":"):
+            # NOTE: scalar items are always double-quoted by dump_front_matter,
+            # while mapping keys never are — so a quoted value containing ": "
+            # (e.g. - "note: buy milk") must NOT be treated as a mapping item.
+            if (": " in rest or rest.endswith(":")) and not rest.startswith('"'):
                 # start of a mapping item
                 current_item = {}
                 k, _, v = rest.partition(":")
