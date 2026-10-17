@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "contextbridge"
+version = "0.1.0"
+description = "Structured handoffs between AI coding sessions — save decisions, tasks, constraints, and key files; load them back as a paste-ready context block."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "ContextBridge contributors" }]
+keywords = ["ai", "handoff", "context", "cli", "developer-tools"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Environment :: Console",
+    "Topic :: Software Development",
+]
+
+[project.scripts]
+cb = "contextbridge.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["contextbridge*"]
